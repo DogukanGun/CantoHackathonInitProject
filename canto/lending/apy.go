@@ -38,6 +38,9 @@ func GetLendingPoolsApy(client *ethclient.Client) (lendingPools []LendingPools) 
 }
 
 func calculateAPY(rate *big.Int, ethMantissa float64, blocksPerDay, daysPerYear int) float64 {
+	if rate.Int64() == 0 {
+		return 0.0
+	}
 	// Convert rate to a numeric value
 	rateValue := new(big.Float).SetInt(rate)
 

@@ -15,10 +15,9 @@ import (
 /*
 UniswapV3PriceOracle returns the price of the target token in therms of specified baseToken address. Utilizes UniswapV3 pools
 */
-func UniswapV3PriceOracle(tokenAddress string, baseToken string, feeArr []int64, observationArr []uint32,
-	useHistoric bool, factoryV3Address string, client *ethclient.Client) (price float64, selectedFee int64, tokenDecimal uint8, err error) {
+func UniswapV3PriceOracle(tokenAddress string, baseToken string, client *ethclient.Client) (price float64, selectedFee int64, tokenDecimal uint8, err error) {
 
-	v3Factory, err := factoryV3.NewFactoryV3Caller(common.HexToAddress(factoryV3Address),
+	v3Factory, err := factoryV3.NewFactoryV3Caller(common.HexToAddress("0x1F98431c8aD98523631AE4a59f267346ea31F984"),
 		client)
 
 	if err != nil {
@@ -31,7 +30,7 @@ func UniswapV3PriceOracle(tokenAddress string, baseToken string, feeArr []int64,
 	v3Pool := &pool.UniswapPoolV3Caller{}
 	selectedFee = 0
 
-	for _, fee := range feeArr {
+	for _, fee := range []int64{100, 500, 3000, 10000} {
 		currentLiq := big.NewInt(0)
 
 		currentAddress, err = v3Factory.GetPool(nil, common.HexToAddress(tokenAddress), common.HexToAddress(baseToken),
@@ -131,12 +130,6 @@ func UniswapV3PriceOracle(tokenAddress string, baseToken string, feeArr []int64,
 		tokenDecimal = token0decimals
 	}
 
-	if !useHistoric {
-		price = (1 / preliminaryResult) * multiplier
-		return
-	}
-
-	price = preliminaryResult * multiplier
-
+	price = (1 / preliminaryResult) * multiplier
 	return
 }

@@ -31,6 +31,7 @@ func GetApyForAavePools(client *ethclient.Client) []PoolAPY {
 			LendingPoolAddress: "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
 		}
 		resultArr[counter] = apyResult
+		counter += 1
 	}
 	return resultArr
 }
